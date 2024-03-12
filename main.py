@@ -21,14 +21,15 @@ block_y = 50
 block_speed = 4
 block_direction = 1
 block_falling = False
+block_img = pygame.image.load(random.choice(blocks))
+block_img = pygame.transform.scale(block_img, (block_width, block_height))
 
-tower = [[WIDTH // 2 - block_width // 2, HEIGHT - block_height]]
+tower = [[WIDTH // 2 - block_width // 2, HEIGHT - block_height, block_img]]
 tower_falling = False
 scroll_speed = 0.7
 
 score = 0
 font = pygame.font.Font(None, 36)
-
 run = True
 while run:
     for event in pygame.event.get():
@@ -43,7 +44,9 @@ while run:
         upper_block = pygame.Rect(tower[-1][0], tower[-1][1], block_width, block_height)
         if pygame.Rect(block_x, block_y, block_width, block_height).colliderect(upper_block):
             block_falling = False
-            tower.append([block_x, block_y])
+            tower.append([block_x, block_y, block_img])
+            block_img = pygame.image.load(random.choice(blocks))
+            block_img = pygame.transform.scale(block_img, (block_width, block_height))
             block_y = 50
             score += 1
         else:
@@ -69,10 +72,8 @@ while run:
             block[0] += block_speed
 
     screen.fill(WHITE)
-    block_img = pygame.image.load(random.choice(blocks))
-    block_img = pygame.transform.scale(block_img, (block_width, block_height))
     for block in tower:
-        screen.blit(block_img, (block[0], block[1]))
+        screen.blit(block[2], (block[0], block[1]))
     screen.blit(block_img, (block_x, block_y))
 
     score_text = font.render(f"Score: {score}", True, BLACK)
